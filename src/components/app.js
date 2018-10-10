@@ -8,7 +8,8 @@ import articles from '../fixtures'
 
 class App extends Component {
   state = {
-    selected: null
+    selected: null,
+    selectedComment: null
   }
   render() {
     return (
@@ -20,10 +21,23 @@ class App extends Component {
           onChange={this.handleSelectionChange}
           isMulti
         />
-        <ArticleList articles={articles} ref={this.setArticleListRef} />
+        <ArticleList
+          articles={articles}
+          ref={this.setArticleListRef}
+          changeSelectComment={this.changeSelectComment}
+          selectedComment={this.state.selectedComment}
+        />
         <ArticleChart articles={articles} />
       </div>
     )
+  }
+
+  changeSelectComment = (selectedComment) => {
+    if (selectedComment == this.state.selectedComment) {
+      this.setState({ selectedComment: null })
+    } else {
+      this.setState({ selectedComment })
+    }
   }
 
   handleSelectionChange = (selected) => this.setState({ selected })

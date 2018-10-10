@@ -8,13 +8,15 @@ class ArticleList extends Component {
   }
 
   get items() {
-    const { articles, openItemId, toggleOpenItem } = this.props
+    const { articles, openItemId, toggleOpenItem, selectedComment } = this.props
     return articles.map((article) => (
       <li key={article.id}>
         <Article
           article={article}
           isOpen={openItemId === article.id}
           toggleOpen={toggleOpenItem}
+          changeSelectComment={this.props.changeSelectComment}
+          selectedComment={selectedComment}
         />
       </li>
     ))
