@@ -11,6 +11,7 @@ class App extends Component {
     selected: null,
     selectedComment: null
   }
+
   render() {
     return (
       <div>

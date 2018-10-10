@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Comment from './comment'
-//import commentsDecorator from '../decorators/comments'
+import commentsDecorator from '../decorators/accordion'
 
 class CommentList extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ class CommentList extends Component {
     return (
       <div>
         <button onClick={this.onButtonClick}>
-          {this.state.isOpen ? 'Close' : 'Comments'}
+          {this.state.isOpen ? 'Close Comments' : 'Open Comments'}
         </button>
         <ul>{isOpen && this.items}</ul>
       </div>
@@ -34,8 +34,7 @@ class CommentList extends Component {
   }
 
   onButtonClick = () => {
-    /*	() =>  this.props.changeSelectComment( article.id ) */
-
+    // () =>  this.props.changeSelectComment( article.id )
     const { article, selectedComment, changeSelectComment } = this.props
     changeSelectComment(article.id)
     this.setState({
@@ -48,4 +47,4 @@ CommentList.defaultProps = {
   comments: []
 }
 
-export default CommentList
+export default commentsDecorator(CommentList)
