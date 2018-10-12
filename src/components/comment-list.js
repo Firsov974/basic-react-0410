@@ -1,50 +1,50 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Comment from './comment'
-import commentsDecorator from '../decorators/accordion'
+import toggleOpen from '../decorators/toggleOpen'
 
 class CommentList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isOpen: props.isOpen
-    }
+  /*
+  static defaultProps = {
+    comments: []
+  }
+*/
+  static propTypes = {
+    comments: PropTypes.array.isRequired,
+    isOpen: PropTypes.bool,
+    toggleOpen: PropTypes.func
   }
 
   render() {
-    const { article, selectedComment, changeSelectComment } = this.props
-    const isOpen = selectedComment == article.id
+    const { isOpen, toggleOpen } = this.props
+    const text = isOpen ? 'hide comments' : 'show comments'
     return (
       <div>
-        <button onClick={this.onButtonClick}>
-          {this.state.isOpen ? 'Close Comments' : 'Open Comments'}
-        </button>
-        <ul>{isOpen && this.items}</ul>
+        <button onClick={toggleOpen}>{text}</button>
+        {this.getBody()}
       </div>
     )
   }
 
-  get items() {
-    const { article, openItemId, toggleOpenItem } = this.props
-    const comments = article.comments || []
-    return comments.map((comment) => (
-      <li key={comment.id}>
-        <Comment comment={comment} />
-      </li>
-    ))
-  }
+  getBody() {
+    //    const { comments = [], isOpen } = this.props
+    const { comments, isOpen } = this.props
+    if (!isOpen) return null
 
-  onButtonClick = () => {
-    // () =>  this.props.changeSelectComment( article.id )
-    const { article, selectedComment, changeSelectComment } = this.props
-    changeSelectComment(article.id)
-    this.setState({
-      isOpen: !this.state.isOpen
-    })
+    const body = comments.length ? (
+      <ul>
+        {comments.map((comment) => (
+          <li key={comment.id}>
+            <Comment comment={comment} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <h3>No comments yet</h3>
+    )
+
+    return <div>{body}</div>
   }
 }
 
-CommentList.defaultProps = {
-  comments: []
-}
-
-export default commentsDecorator(CommentList)
+export default toggleOpen(CommentList)

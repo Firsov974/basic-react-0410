@@ -7,7 +7,10 @@ const accordionDecorator = (OriginalComponent) =>
       openItemId: null
     }
 
-    toggleOpenItem = (openItemId) => this.setState({ openItemId })
+    toggleOpenItem = (openItemId) =>
+      this.setState({
+        openItemId: openItemId === this.state.openItemId ? null : openItemId
+      })
 
     render() {
       return (

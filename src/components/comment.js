@@ -1,45 +1,19 @@
-import React, { PureComponent } from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
+import PropTypes from 'prop-types'
 
-class Comment extends PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = {
-      isOpen: props.isOpen
-    }
-  }
+function Comment({ comment }) {
+  return (
+    <div>
+      {comment.text} <b>by {comment.user}</b>
+    </div>
+  )
+}
 
-  render() {
-    console.log('---', 'rendering comment')
-    const { comment } = this.props
-    return (
-      <div style={{ marginTop: '10px' }}>
-        {/*<button onClick={this.onButtonClick}>
-          	{this.state.isOpen ? 'close' : 'open'}
-        </button>*/}
-        <h4 ref={this.setTitleRef}>{comment.user}</h4>
-        {comment.text}
-        {/*this.body*/}
-      </div>
-    )
-  }
-
-  setTitleRef = (ref) => {
-    console.log('---', 'comments title', ref)
-  }
-
-  onButtonClick = () => {
-    this.props.toggleOpen(this.props.article.id)
-    this.setState({
-      isOpen: !this.state.isOpen
-    })
-  }
-
-  get body() {
-    const { comment } = this.props
-    if (!this.state.isOpen) return null
-    return <section>{comment.text}</section>
-  }
+Comment.propTypes = {
+  comment: PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    user: PropTypes.string
+  }).isRequired
 }
 
 export default Comment

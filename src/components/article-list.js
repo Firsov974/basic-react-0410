@@ -2,25 +2,30 @@ import React, { Component } from 'react'
 import Article from './article'
 import accordionDecorator from '../decorators/accordion'
 
-class ArticleList extends Component {
+export class ArticleList extends Component {
   render() {
     return <ul>{this.items}</ul>
   }
 
   get items() {
-    const { articles, openItemId, toggleOpenItem, selectedComment } = this.props
+    const { articles, openItemId, toggleOpenItem } = this.props
     return articles.map((article) => (
-      <li key={article.id}>
+      <li key={article.id} className="test--article-list__item">
         <Article
           article={article}
           isOpen={openItemId === article.id}
           toggleOpen={toggleOpenItem}
-          changeSelectComment={this.props.changeSelectComment}
-          selectedComment={selectedComment}
         />
       </li>
     ))
   }
+
+  componentDidMount() {
+    const { fetchData } = this.props
+    fetchData && fetchData()
+  }
 }
 
-export default accordionDecorator(ArticleList)
+const ArticleListWithAccordion = accordionDecorator(ArticleList)
+
+export default ArticleListWithAccordion
