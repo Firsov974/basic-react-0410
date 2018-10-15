@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import CSSTransition from 'react-addons-css-transition-group'
 import CommentList from '../comment-list'
 import './style.css'
+import PropTypes from 'prop-types'
 
 class Index extends PureComponent {
   state = {
@@ -13,13 +14,13 @@ class Index extends PureComponent {
   }
 
   render() {
-    const { article, isOpen } = this.props
+    // const { article, isOpen } = this.props
     return (
       <div>
         <h3>
-          {article.title}
+          {this.props.article.title}
           <button onClick={this.handleClick} className="test--article__btn">
-            {isOpen ? 'close' : 'open'}
+            {this.props.isOpen ? 'close' : 'open'}
           </button>
         </h3>
         <CSSTransition
@@ -35,20 +36,32 @@ class Index extends PureComponent {
     )
   }
 
+  //  handleClick = () => this.props.toggleOpen(this.props.article.id)
   handleClick = () => this.props.toggleOpen(this.props.article.id)
 
   get body() {
-    const { isOpen, article } = this.props
-    if (!isOpen) return null
+    // const { isOpen, article } = this.props
+    if (!this.props.isOpen) return null
     if (this.state.error) return <h3>Error</h3>
 
     return (
       <section className="test--article__body">
-        {article.text}
-        <CommentList comments={article.comments} />
+        {this.props.article.text}
+        <CommentList comments={this.props.article.comments} />
       </section>
     )
   }
+}
+
+Index.propTypes = {
+  article: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    date: PropTypes.string,
+    title: PropTypes.string,
+    text: PropTypes.string,
+    comments: PropTypes.array
+  }),
+  isOpen: PropTypes.boolean
 }
 
 export default Index

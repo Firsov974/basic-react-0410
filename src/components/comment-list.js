@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Comment from './comment'
 import toggleOpen from '../decorators/toggleOpen'
+import CSSTransition from 'react-addons-css-transition-group'
+import './style.css'
 
 class CommentList extends Component {
   /*
@@ -34,9 +36,17 @@ class CommentList extends Component {
     const body = comments.length ? (
       <ul>
         {comments.map((comment) => (
-          <li key={comment.id}>
-            <Comment comment={comment} />
-          </li>
+          <CSSTransition
+            transitionAppear
+            transitionName="comment"
+            transitionEnterTimeout={500}
+            transitionAppearTimeout={1000}
+            transitionLeaveTimeout={300}
+          >
+            <li key={comment.id}>
+              <Comment comment={comment} />
+            </li>
+          </CSSTransition>
         ))}
       </ul>
     ) : (

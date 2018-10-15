@@ -1,0 +1,26 @@
+.comment-enter {
+    opacity: 0.01;
+}
+
+.comment-enter.comment-enter-comment {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
+}
+
+.comment-appear {
+    opacity: 0.01;
+}
+
+.comment-appear.comment-appear-active {
+    opacity: 1;
+    transition: opacity 1000ms ease-in;
+}
+
+.comment-leave {
+    opacity: 1;
+}
+
+.comment-leave.comment-leave-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}
