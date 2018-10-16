@@ -27,6 +27,20 @@ export class ArticleList extends Component {
   }
 }
 
+ArticleList.propTypes = {
+  articles: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      date: PropTypes.string,
+      title: PropTypes.string,
+      text: PropTypes.string,
+      comments: PropTypes.array
+    })
+  ).isRequired,
+  openItemId: PropTypes.string,
+  toggleOpenItem: PropTypes.func
+}
+
 const ArticleListWithAccordion = accordionDecorator(ArticleList)
 
 export default ArticleListWithAccordion

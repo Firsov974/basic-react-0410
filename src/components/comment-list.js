@@ -6,11 +6,6 @@ import CSSTransition from 'react-addons-css-transition-group'
 import './style.css'
 
 class CommentList extends Component {
-  /*
-  static defaultProps = {
-    comments: []
-  }
-*/
   static propTypes = {
     comments: PropTypes.array.isRequired,
     isOpen: PropTypes.bool,
@@ -22,7 +17,9 @@ class CommentList extends Component {
     const text = isOpen ? 'hide comments' : 'show comments'
     return (
       <div>
-        <button onClick={toggleOpen}>{text}</button>
+        <button onClick={toggleOpen} className="test--comment__btn">
+          {text}
+        </button>
         {this.getBody()}
       </div>
     )
@@ -35,19 +32,19 @@ class CommentList extends Component {
 
     const body = comments.length ? (
       <ul>
-        {comments.map((comment) => (
-          <CSSTransition
-            transitionAppear
-            transitionName="comment"
-            transitionEnterTimeout={500}
-            transitionAppearTimeout={1000}
-            transitionLeaveTimeout={300}
-          >
-            <li key={comment.id}>
+        <CSSTransition
+          transitionAppear
+          transitionName="comment"
+          transitionEnterTimeout={500}
+          transitionAppearTimeout={1000}
+          transitionLeaveTimeout={300}
+        >
+          {comments.map((comment) => (
+            <li key={comment.id} className="test--comment-list__item">
               <Comment comment={comment} />
             </li>
-          </CSSTransition>
-        ))}
+          ))}
+        </CSSTransition>
       </ul>
     ) : (
       <h3>No comments yet</h3>

@@ -61,7 +61,7 @@ Index.propTypes = {
     text: PropTypes.string,
     comments: PropTypes.array
   }),
-  isOpen: PropTypes.boolean
+  isOpen: PropTypes.bool
 }
 
 export default Index
