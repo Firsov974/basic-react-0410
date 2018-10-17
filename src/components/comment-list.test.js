@@ -12,23 +12,25 @@ describe('CommentList', () => {
   })
 
   it('should render items', () => {
-    const container = shallow(<CommentList comments={articles.comments} />)
-
-    expect(container.find('.test--comment-list__item').length).toEqual(
-      comments.length
-    )
+    articles.forEach((article) => {
+      const container = shallow(<CommentList comments={article.comments} />)
+      expect(container.find('.test--comment-list__item').length).toEqual(
+        article.comments.length
+      )
+    })
   })
 
   it('should open comments on click', () => {
-    const container = mount(<CommentList comments={articles.comments} />)
+    articles.forEach((article) => {
+      const container = mount(<CommentList comments={article.comments} />)
+      expect(container.find('.test--comment__body').length).toEqual(0)
 
-    expect(container.find('.test--comment__body').length).toEqual(0)
+      container
+        .find('.test--comment__btn')
+        .at(0)
+        .simulate('click')
 
-    container
-      .find('.test--comment__btn')
-      .at(0)
-      .simulate('click')
-
-    expect(container.find('.test--comment__body').length).toEqual(1)
+      expect(container.find('.test--comment__body').length).toEqual(1)
+    })
   })
 })
