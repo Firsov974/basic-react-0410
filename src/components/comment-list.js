@@ -31,7 +31,7 @@ class CommentList extends Component {
     if (!isOpen) return null
 
     const body = comments.length ? (
-      <ul>
+      <ul className="test--comment__list">
         <CSSTransition
           transitionAppear
           transitionName="comment"

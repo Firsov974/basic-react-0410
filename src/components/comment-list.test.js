@@ -13,7 +13,9 @@ describe('CommentList', () => {
 
   it('should render items', () => {
     articles.forEach((article) => {
-      const container = shallow(<CommentList comments={article.comments} />)
+      const container = shallow(
+        <CommentList comments={article.comments} isOpen={true} />
+      )
       expect(container.find('.test--comment-list__item').length).toEqual(
         article.comments.length
       )
@@ -21,16 +23,14 @@ describe('CommentList', () => {
   })
 
   it('should open comments on click', () => {
-    articles.forEach((article) => {
-      const container = mount(<CommentList comments={article.comments} />)
-      expect(container.find('.test--comment__body').length).toEqual(0)
+    const container = mount(<CommentList comments={articles[0].comments} />)
+    expect(container.find('.test--comment__list').length).toEqual(0)
 
-      container
-        .find('.test--comment__btn')
-        .at(0)
-        .simulate('click')
+    container
+      .find('.test--comment__btn')
+      .at(0)
+      .simulate('click')
 
-      expect(container.find('.test--comment__body').length).toEqual(1)
-    })
+    expect(container.find('.test--comment__list').length).toEqual(1)
   })
 })
