@@ -5,7 +5,7 @@ import toggleOpen from '../decorators/toggleOpen'
 import CSSTransition from 'react-addons-css-transition-group'
 import './style.css'
 
-class CommentList extends Component {
+export class CommentList extends Component {
   static propTypes = {
     comments: PropTypes.array.isRequired,
     isOpen: PropTypes.bool,
@@ -26,8 +26,8 @@ class CommentList extends Component {
   }
 
   getBody() {
-    //    const { comments = [], isOpen } = this.props
-    const { comments, isOpen } = this.props
+    const { comments = [], isOpen } = this.props
+    // const { comments, isOpen } = this.props
     if (!isOpen) return null
 
     const body = comments.length ? (
@@ -50,8 +50,16 @@ class CommentList extends Component {
       <h3>No comments yet</h3>
     )
 
-    return <div>{body}</div>
+    return <div className="test--comment__body">{body}</div>
+  }
+
+  componentDidMount() {
+    const { fetchData } = this.props
+
+    fetchData && fetchData()
   }
 }
 
-export default toggleOpen(CommentList)
+const CommentListWithToggleOpen = toggleOpen(CommentList)
+
+export default CommentListWithToggleOpen
