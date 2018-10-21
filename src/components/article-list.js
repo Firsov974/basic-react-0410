@@ -19,8 +19,8 @@ export class ArticleList extends Component {
   }
 
   get items() {
-    const { articles, filters, openItemId, toggleOpenItem } = this.props
-    return this._filterArticles(articles, filters).map((article) => (
+    const { articles, openItemId, toggleOpenItem } = this.props
+    return articles.map((article) => (
       <li key={article.id} className="test--article-list__item">
         <Article
           article={article}
@@ -35,27 +35,33 @@ export class ArticleList extends Component {
     const { fetchData } = this.props
     fetchData && fetchData()
   }
+}
 
-  _filterArticles(articles, filters) {
-    const idFilter = filters.ids.map((item) => item.value)
-    console.log(' --- ids: ' + idFilter)
+const ArticleListWithAccordion = accordionDecorator(ArticleList)
 
-    const dateFilterFrom =
-      filters.dates.from && new Date(filters.dates.from).getTime()
-    const dateFilterTo =
-      filters.dates.to && new Date(filters.dates.to).getTime()
-    console.log(
-      ' --- date from: ' + filters.dates.from + ' date to: ' + filters.dates.to
-    )
+function mapStateToProps(state) {
+  const articles = state.articles
+  const filters = state.filters
 
-    const noDateFilter = !dateFilterFrom && !dateFilterTo
+  const idFilter = filters.ids.map((item) => item.value)
+  console.log(' --- ids: ' + idFilter)
 
-    const oneDate =
-      dateFilterFrom && !dateFilterTo
-        ? new Date(dateFilterFrom).setHours(0, 0, 0, 0)
-        : null
+  const dateFilterFrom =
+    filters.dates.from && new Date(filters.dates.from).getTime()
+  const dateFilterTo = filters.dates.to && new Date(filters.dates.to).getTime()
+  console.log(
+    ' --- date from: ' + filters.dates.from + ' date to: ' + filters.dates.to
+  )
 
-    return articles.filter((article) => {
+  const noDateFilter = !dateFilterFrom && !dateFilterTo
+
+  const oneDate =
+    dateFilterFrom && !dateFilterTo
+      ? new Date(dateFilterFrom).setHours(0, 0, 0, 0)
+      : null
+
+  return {
+    articles: articles.filter((article) => {
       const idCheck = !idFilter.length || idFilter.includes(article.id)
       const date = article.date && new Date(article.date).getTime()
       const oneDateCheck =
@@ -63,13 +69,9 @@ export class ArticleList extends Component {
       const dateRangeCheck = date >= dateFilterFrom && date <= dateFilterTo
 
       return idCheck && (noDateFilter || oneDateCheck || dateRangeCheck)
-    })
+    }),
+    filters: state.filters
   }
 }
 
-const ArticleListWithAccordion = accordionDecorator(ArticleList)
-
-export default connect((state) => ({
-  articles: state.articles,
-  filters: state.filters
-}))(ArticleListWithAccordion)
+export default connect(mapStateToProps)(ArticleListWithAccordion)
