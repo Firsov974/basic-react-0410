@@ -1,4 +1,3 @@
-import defaultArticles from '../fixtures'
 import { FILTER_ID, FILTER_DATE } from '../constants'
 
 const defFilterState = {
@@ -9,20 +8,26 @@ const defFilterState = {
   }
 }
 
-//export default (articlesState = defaultArticles, action) => {
 export default (filtersState = defFilterState, action) => {
   const { type, payload } = action
 
   switch (type) {
     case FILTER_ID:
-      console.log(' --- ' + payload.values)
-      //      return {
-      //		  articlesState.filter((article) => article.id !== payload.values.id )
-      //	  }
       return {
         ...filtersState,
         ids: payload.values ? payload.values : defFilterState.ids
       }
+
+    case FILTER_DATE:
+      const range = payload.range || {}
+      return {
+        ...filtersState,
+        dates: {
+          from: range.from ? range.from : defFilterState.dates.from,
+          to: range.to ? range.to : defFilterState.dates.to
+        }
+      }
+
     default:
       //      return articlesState
       return filtersState
