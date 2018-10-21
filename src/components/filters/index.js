@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import DateRange from './date-range'
 import SelectFilter from './select'
+import { filterByIds } from '../../ac'
 
 class Filters extends Component {
   static propTypes = {}
@@ -8,11 +10,30 @@ class Filters extends Component {
   render() {
     return (
       <div>
-        <SelectFilter articles={this.props.articles} />
-        <DateRange />
+        <SelectFilter
+          articles={this.props.articles}
+          selected={this.props.filters.id}
+        />
+        <DateRange filter={this.props.filters.dates} />
+        <button onClick={this.handleFilterClick}>filter</button>
       </div>
     )
   }
+
+  handleFilterClick = () => {
+    console.log('---', 'todo: implement filter')
+    this.props.handleFilter()
+  }
 }
 
-export default Filters
+const mapDispatchToProps = {
+  handleFilter: filterByIds
+}
+
+export default connect(
+  (state) => ({
+    articles: state.articles,
+    filters: state.filters
+  }),
+  mapDispatchToProps
+)(Filters)
