@@ -11,17 +11,30 @@ export const filtratedArticlesSelector = createSelector(
   dateRangeSelector,
   articleListSelector,
   (selected, dateRange, articles) => {
-    console.log('---', 'article list selector')
     const { from, to } = dateRange
+    const ids = selected.length
+      ? selected.map((item) => item.value)
+      : Object.keys(articles)
+    console.log('article list selector: ', ids)
 
-    return articles.filter((article) => {
+    //    return Object.values(articles).filter((article) => {
+    //      const published = Date.parse(article.date)
+    //      return (
+    //        (!selected.length ||
+    //          selected.find((selected) => selected.value === article.id)) &&
+    //        (!from || !to || (published > from && published < to))
+    //      )
+    //    })
+    return ids.reduce((acc, id) => {
+      const article = articles[id]
       const published = Date.parse(article.date)
-      return (
-        (!selected.length ||
-          selected.find((selected) => selected.value === article.id)) &&
-        (!from || !to || (published > from && published < to))
-      )
-    })
+      return !from || !to || (published > from && published < to)
+        ? {
+            ...acc,
+            [id]: article
+          }
+        : { ...acc }
+    }, {})
   }
 )
 

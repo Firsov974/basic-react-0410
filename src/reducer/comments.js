@@ -10,6 +10,7 @@ const defaultComments = normalizedComments.reduce(
 )
 
 export default (state = defaultComments, action) => {
+  console.log('defaultArticles: ', defaultComments)
   const { type, payload } = action
 
   switch (type) {
