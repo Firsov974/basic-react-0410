@@ -5,6 +5,6 @@ export default (store) => (next) => (action) => {
     action.payload.comment.id = Math.random()
       .toString()
       .substring(2)
-    next(action)
   }
+  next(action)
 }

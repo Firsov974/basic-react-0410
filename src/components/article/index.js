@@ -51,6 +51,7 @@ class Article extends PureComponent {
 
   handleDeleteClick = () => {
     const { deleteArticle, article } = this.props
+    console.log('handleDeleteClick: ', article.id)
     deleteArticle(article.id)
   }
 
