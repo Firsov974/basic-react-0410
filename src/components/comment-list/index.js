@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import CSSTransition from 'react-addons-css-transition-group'
 import Comment from '../comment'
 import CommentForm from '../comment-form'
 import toggleOpen from '../../decorators/toggleOpen'
 import './style.css'
+import { commentsLoadingSelector, commentsSelector } from '../../selectors'
+import { loadAllComments } from '../../ac'
+import Loader from '../common/loader'
 
 class CommentList extends Component {
   static propTypes = {
@@ -40,8 +44,11 @@ class CommentList extends Component {
   }
 
   getBody() {
+    if (this.props.loading) return <Loader />
+
     const {
-      article: { id, comments = [] },
+      article: { id },
+      comments = [],
       isOpen
     } = this.props
     if (!isOpen) return null
@@ -61,14 +68,30 @@ class CommentList extends Component {
   get comments() {
     return (
       <ul>
-        {this.props.article.comments.map((id) => (
-          <li key={id} className="test--comment-list__item">
-            <Comment id={id} />
+        {this.props.comments.map((comment) => (
+          <li key={comment.id} className="test--comment-list__item">
+            <Comment id={comment.id} />
           </li>
         ))}
       </ul>
     )
   }
+
+  componentDidUpdate(oldProps) {
+    const { isOpen, fetchData, comments = [], article } = this.props
+    if (!oldProps.isOpen && isOpen && !comments.length && fetchData)
+      fetchData(article.id)
+  }
 }
 
-export default toggleOpen(CommentList)
+const createMapStateToProps = () => {
+  return (state, ownProps) => ({
+    comments: commentsSelector(state, ownProps),
+    loading: commentsLoadingSelector(state)
+  })
+}
+
+export default connect(
+  createMapStateToProps(),
+  { fetchData: loadAllComments }
+)(toggleOpen(CommentList))
