@@ -1,5 +1,4 @@
 import { ADD_COMMENT, LOAD_ALL_COMMENTS, SUCCESS, START } from '../constants'
-import { normalizedComments } from '../fixtures'
 import { arrToMap } from './utils'
 import { Record } from 'immutable'
 
