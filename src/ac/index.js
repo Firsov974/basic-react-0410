@@ -9,7 +9,8 @@ import {
   LOAD_ARTICLE_COMMENTS,
   SUCCESS,
   FAIL,
-  START
+  START,
+  LOAD_PAGE_COMMENTS
 } from '../constants'
 
 export function increment() {
@@ -51,6 +52,13 @@ export function loadAllArticles() {
   return {
     type: LOAD_ALL_ARTICLES,
     callAPI: '/api/article'
+  }
+}
+
+export function loadPageComments() {
+  return {
+    type: LOAD_PAGE_COMMENTS,
+    callAPI: '/api/comment?limit=5&offset=10'
   }
 }
 
