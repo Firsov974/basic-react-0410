@@ -10,6 +10,7 @@ import {
   SUCCESS,
   FAIL,
   START,
+  LOAD_ALL_COMMENTS,
   LOAD_PAGE_COMMENTS
 } from '../constants'
 
@@ -55,10 +56,20 @@ export function loadAllArticles() {
   }
 }
 
-export function loadPageComments() {
+export function loadAllComments() {
+  debugger
+  return {
+    type: LOAD_ALL_COMMENTS,
+    callAPI: '/api/comment'
+  }
+}
+
+export function loadPageComments(limit, offset) {
+  debugger
   return {
     type: LOAD_PAGE_COMMENTS,
-    callAPI: '/api/comment?limit=5&offset=10'
+    payload: { limit, offset },
+    callAPI: `/api/comment?limit=${limit}&offset=${offset}`
   }
 }
 

@@ -6,7 +6,7 @@ import {
   commentsLoadingSelector,
   commentListSelector
 } from '../selectors'
-import { loadPageComments } from '../ac'
+import { loadAllComments } from '../ac'
 import Loader from './common/loader'
 import { NavLink } from 'react-router-dom'
 
@@ -23,6 +23,7 @@ export class CommentPagination extends Component {
 
   get items() {
     const { comments } = this.props
+    debugger
     return comments.map((comment) => (
       <li key={comment.id} className="test--comment-list__item">
         <NavLink to={`/comments/${comment.id}`} activeStyle={{ color: 'red' }}>
@@ -34,6 +35,7 @@ export class CommentPagination extends Component {
 
   componentDidMount() {
     const { fetchData, loaded, loading } = this.props
+    debugger
     fetchData && !loading && !loaded && fetchData()
   }
 }
@@ -46,5 +48,5 @@ export default connect(
       loaded: commentsLoadedSelector(state)
     }
   },
-  { fetchData: loadPageComments }
+  { fetchData: loadAllComments }
 )(CommentPagination)
