@@ -1,86 +1,19 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
-import Comment from '../comment'
-import Pagination from '../comment-pagination'
-import { loadCommentsByPage } from '../../ac'
-import Loader from '../common/loader'
-import {
-  commentListSelector,
-  commentsByPageSelector,
-  commentsCountSelector,
-  commentsCurPageSelector,
-  commentsStepSelector,
-  loadingByPageSelector,
-  loadedByPageSelector,
-  pagesStateSelector
-} from '../../selectors'
+import React from 'react'
+import CommentsPagination from '../comment-pagination'
+import { Route, Redirect } from 'react-router-dom'
 
-class CommentsPage extends Component {
-  loadCommentsByPage = (page) => {
-    const { step, loadCommentsByPage, pagesState } = this.props
-    const pageState = pagesState.get(page)
-    const isLoaded = pageState && pageState.get('loaded')
-
-    loadCommentsByPage(page, step, isLoaded)
-  }
-
-  componentDidMount() {
-    const {
-      loadCommentsByPage,
-      match: {
-        params: { page: currentPage }
-      }
-    } = this.props
-    loadCommentsByPage(currentPage)
-  }
-
-  render() {
-    const {
-      comments,
-      count,
-      step,
-      loading,
-      match: {
-        params: { page: currentPage }
-      }
-    } = this.props
-    const pagesCount = (count && Math.ceil(count / step)) || 0
-    debugger
-    return (
-      <Fragment>
-        <Pagination
-          curPage={currentPage}
-          pagesCount={pagesCount}
-          fetchData={this.loadCommentsByPage}
-        />
-        {loading ? (
-          <Loader />
-        ) : !currentPage || currentPage > pagesCount ? (
-          <h1>Please Select Page from 1 to {pagesCount} </h1>
-        ) : (
-          comments &&
-          comments.map((id) => {
-            return (
-              <li key={id}>
-                <Comment id={id} />
-              </li>
-            )
-          })
-        )}
-      </Fragment>
-    )
-  }
+function CommentsPage({ match }) {
+  return match.isExact ? (
+    <Redirect to="/comments/1" />
+  ) : (
+    <Route path="/comments/:page" render={getCommentsPaginator} />
+  )
 }
 
-export default connect(
-  (state) => ({
-    comments: commentsByPageSelector(state),
-    count: commentsCountSelector(state),
-    step: commentsStepSelector(state),
-    currentPage: commentsCurPageSelector(state),
-    loading: loadingByPageSelector(state),
-    loaded: loadedByPageSelector(state),
-    pagesState: pagesStateSelector(state)
-  }),
-  { loadCommentsByPage }
-)(CommentsPage)
+function getCommentsPaginator({ match }) {
+  return <CommentsPagination page={match.params.page} />
+}
+
+CommentsPage.propTypes = {}
+
+export default CommentsPage

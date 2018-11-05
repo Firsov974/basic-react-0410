@@ -11,39 +11,7 @@ export const articleListSelector = createSelector(
 )
 
 export const commentsSelector = (state) => state.comments.entities
-export const commentsCountSelector = (state) => state.comments.pagination.count
 export const idSelector = (_, props) => props.id
-export const commentsCurPageSelector = (state) =>
-  state.comments.pagination.curPage
-export const commentsStepSelector = (state) => state.comments.pagination.step
-export const commentListSelector = createSelector(
-  commentsSelector,
-  (commentsMap) => commentsMap.valueSeq().toArray()
-)
-
-export const pagesStateSelector = (state) =>
-  state.comments.pagination.pagesState
-
-export const pageStateSelector = createSelector(
-  pagesStateSelector,
-  commentsCurPageSelector,
-  (pageStates, curPage) => pageStates.get(curPage)
-)
-
-export const commentsByPageSelector = createSelector(
-  pageStateSelector,
-  (pageState) => pageState && pageState.get('commentIds')
-)
-
-export const loadingByPageSelector = createSelector(
-  pageStateSelector,
-  (pageState) => pageState && pageState.get('loading')
-)
-
-export const loadedByPageSelector = createSelector(
-  pageStateSelector,
-  (pageState) => pageState && pageState.get('loaded')
-)
 
 export const filtratedArticlesSelector = createSelector(
   selectionSelector,
@@ -74,4 +42,18 @@ export const articleSelector = createSelector(
   (articles, id) => {
     return articles.get(id)
   }
+)
+
+export const totalCommentsSelector = (state) => state.comments.total
+export const commentsPagenationSelector = (state) => state.comments.pagination
+export const pageSelector = (_, props) => props.page
+export const commentsPageIdsSelector = createSelector(
+  commentsPagenationSelector,
+  pageSelector,
+  (pagination, page) => pagination.getIn([page, 'ids'])
+)
+export const commentsPageLoadingSelector = createSelector(
+  commentsPagenationSelector,
+  pageSelector,
+  (pagination, page) => pagination.getIn([page, 'loading'])
 )

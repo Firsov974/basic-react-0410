@@ -2,13 +2,10 @@ import {
   ADD_COMMENT,
   LOAD_ARTICLE_COMMENTS,
   LOAD_PAGE_COMMENTS,
-  CHANGE_CURRENT_PAGE,
-  INCREMENT_PAGE,
-  DECREMENT_PAGE,
   START,
   SUCCESS
 } from '../constants'
-import { Record, OrderedMap } from 'immutable'
+import { Record, OrderedMap, Map } from 'immutable'
 import { arrToMap } from './utils'
 
 const CommentRecord = Record({
@@ -17,21 +14,10 @@ const CommentRecord = Record({
   user: null
 })
 
-const PageStateRecord = Record({
-  number: null,
-  commentIds: [],
-  loading: true,
-  loaded: false
-})
-
 const ReducerRecord = Record({
   entities: new OrderedMap({}),
-  pagination: {
-    curPage: 1,
-    step: 5,
-    count: null,
-    pagesState: new OrderedMap({})
-  }
+  pagination: new Map({}),
+  total: null
 })
 
 export default (state = new ReducerRecord(), action) => {
@@ -51,43 +37,17 @@ export default (state = new ReducerRecord(), action) => {
       return state.mergeIn(['entities'], arrToMap(response, CommentRecord))
 
     case LOAD_PAGE_COMMENTS + START:
-      return state
-        .setIn(['pagination', 'curPage'], payload.curPage)
-        .setIn(
-          ['pagination', 'pagesState', payload.curPage],
-          new PageStateRecord()
-        )
+      return state.setIn(['pagination', payload.page, 'loading'], true)
 
     case LOAD_PAGE_COMMENTS + SUCCESS:
-      //      return state
-      //        .mergeIn(['entities'], arrToMap(response.records, CommentRecord))
       return state
-        .setIn(['entities'], arrToMap(response.records, CommentRecord))
-        .setIn(['pagination', 'count'], response.total)
+        .set('total', response.total)
+        .mergeIn(['entities'], arrToMap(response.records, CommentRecord))
         .setIn(
-          ['pagination', 'pagesState', payload.curPage, 'commentIds'],
+          ['pagination', payload.page, 'ids'],
           response.records.map((comment) => comment.id)
         )
-        .setIn(['pagination', 'pagesState', payload.curPage, 'loading'], false)
-        .setIn(['pagination', 'pagesState', payload.curPage, 'loaded'], true)
-
-    case INCREMENT_PAGE:
-      const count = state.getIn(['pagination', 'count'])
-      const step = state.getIn(['pagination', 'step'])
-      const pagesCount = (count && Math.ceil(count / step)) || 0
-      return state.setIn(
-        ['pagination', 'curPage'],
-        payload.curPage < pagesCount ? +payload.curPage + 1 : +pagesCount
-      )
-
-    case DECREMENT_PAGE:
-      return state.setIn(
-        ['pagination', 'curPage'],
-        payload.curPage > 1 ? +payload.curPage - 1 : 1
-      )
-
-    case CHANGE_CURRENT_PAGE:
-      return state.setIn(['pagination', 'curPage'], payload.curPage)
+        .setIn(['pagination', payload.page, 'loading'], false)
 
     default:
       return state

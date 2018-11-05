@@ -8,9 +8,6 @@ import {
   LOAD_ARTICLE,
   LOAD_ARTICLE_COMMENTS,
   LOAD_PAGE_COMMENTS,
-  CHANGE_CURRENT_PAGE,
-  INCREMENT_PAGE,
-  DECREMENT_PAGE,
   SUCCESS,
   FAIL,
   START
@@ -19,20 +16,6 @@ import {
 export function increment() {
   return {
     type: INCREMENT
-  }
-}
-
-export function incrementPage(curPage) {
-  return {
-    type: INCREMENT_PAGE,
-    payload: { curPage }
-  }
-}
-
-export function decrementPage(curPage) {
-  return {
-    type: DECREMENT_PAGE,
-    payload: { curPage }
   }
 }
 
@@ -106,37 +89,18 @@ export function loadArticleComments(articleId) {
   }
 }
 
-export function loadCommentsByPage(curPage = 1, step = 5, isLoaded) {
-  const offset = (curPage - 1) * step || 0
+export function checkAndLoadCommentsForPage(page) {
+  return (dispatch, getState) => {
+    const {
+      comments: { pagination }
+    } = getState()
+    if (pagination.getIn([page, 'loading']) || pagination.getIn([page, 'ids']))
+      return
 
-  return (dispatch) => {
-    if (isLoaded) {
-      dispatch({
-        type: CHANGE_CURRENT_PAGE,
-        payload: { curPage }
-      })
-    } else {
-      dispatch({
-        type: LOAD_PAGE_COMMENTS + START,
-        payload: { curPage }
-      })
-
-      fetch(`/api/comment?limit=${step}&offset=${offset}`)
-        .then((res) => res.json())
-        .then((response) => {
-          dispatch({
-            type: LOAD_PAGE_COMMENTS + SUCCESS,
-            payload: { curPage },
-            response
-          })
-        })
-        .catch((error) =>
-          dispatch({
-            type: LOAD_PAGE_COMMENTS + FAIL,
-            payload: {},
-            error
-          })
-        )
-    }
+    dispatch({
+      type: LOAD_PAGE_COMMENTS,
+      payload: { page },
+      callAPI: `/api/comment?limit=5&offset=${(page - 1) * 5}`
+    })
   }
 }
