@@ -15,3 +15,7 @@ export const LOAD_PAGE_COMMENTS = 'LOAD_PAGE_COMMENTS'
 export const START = '_START'
 export const SUCCESS = '_SUCCESS'
 export const FAIL = '_FAIL'
+
+export const CHANGE_CURRENT_PAGE = 'CHANGE_CURRENT_PAGE'
+export const INCREMENT_PAGE = 'INCREMENT_PAGE'
+export const DECREMENT_PAGE = 'DECREMENT_PAGE'

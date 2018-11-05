@@ -1,29 +1,86 @@
 import React, { Component, Fragment } from 'react'
-import CommentPagination from '../comment-pagination'
-import { Route } from 'react-router-dom'
+import { connect } from 'react-redux'
 import Comment from '../comment'
+import Pagination from '../comment-pagination'
+import { loadCommentsByPage } from '../../ac'
+import Loader from '../common/loader'
+import {
+  commentListSelector,
+  commentsByPageSelector,
+  commentsCountSelector,
+  commentsCurPageSelector,
+  commentsStepSelector,
+  loadingByPageSelector,
+  loadedByPageSelector,
+  pagesStateSelector
+} from '../../selectors'
 
 class CommentsPage extends Component {
-  static propTypes = {}
+  loadCommentsByPage = (page) => {
+    const { step, loadCommentsByPage, pagesState } = this.props
+    const pageState = pagesState.get(page)
+    const isLoaded = pageState && pageState.get('loaded')
+
+    loadCommentsByPage(page, step, isLoaded)
+  }
+
+  componentDidMount() {
+    const {
+      loadCommentsByPage,
+      match: {
+        params: { page: currentPage }
+      }
+    } = this.props
+    loadCommentsByPage(currentPage)
+  }
 
   render() {
-    console.log('---', 'comments-page match: ', this.props.match)
+    const {
+      comments,
+      count,
+      step,
+      loading,
+      match: {
+        params: { page: currentPage }
+      }
+    } = this.props
+    const pagesCount = (count && Math.ceil(count / step)) || 0
+    debugger
     return (
       <Fragment>
-        <CommentPagination />
-        <Route path="/comments/page/:id" children={this.getComments} />
+        <Pagination
+          curPage={currentPage}
+          pagesCount={pagesCount}
+          fetchData={this.loadCommentsByPage}
+        />
+        {loading ? (
+          <Loader />
+        ) : !currentPage || currentPage > pagesCount ? (
+          <h1>Please Select Page from 1 to {pagesCount} </h1>
+        ) : (
+          comments &&
+          comments.map((id) => {
+            return (
+              <li key={id}>
+                <Comment id={id} />
+              </li>
+            )
+          })
+        )}
       </Fragment>
     )
   }
-
-  getComments = ({ match }) => {
-    console.log('---', 'comments match: ', match)
-
-    if (!match) return <h1>Please Select A Page</h1>
-
-    const { id } = match.params
-    return <Comment id={id} key={id} isOpen />
-  }
 }
 
-export default CommentsPage
+export default connect(
+  (state) => ({
+    comments: commentsByPageSelector(state),
+    count: commentsCountSelector(state),
+    step: commentsStepSelector(state),
+    currentPage: commentsCurPageSelector(state),
+    loading: loadingByPageSelector(state),
+    loaded: loadedByPageSelector(state),
+    pagesState: pagesStateSelector(state)
+  }),
+  { loadCommentsByPage }
+)(CommentsPage)

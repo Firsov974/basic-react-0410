@@ -10,22 +10,46 @@ export const articleListSelector = createSelector(
   (articlesMap) => articlesMap.valueSeq().toArray()
 )
 
-export const commentsLoadingSelector = (state) => state.comments.loading
-export const commentsLoadedSelector = (state) => state.comments.loaded
-export const commentsSelector = (state) => state.comments
-export const commentsMapSelector = (state) => state.comments.entities
+export const commentsSelector = (state) => state.comments.entities
+export const commentsCountSelector = (state) => state.comments.pagination.count
+export const idSelector = (_, props) => props.id
+export const commentsCurPageSelector = (state) =>
+  state.comments.pagination.curPage
+export const commentsStepSelector = (state) => state.comments.pagination.step
 export const commentListSelector = createSelector(
-  commentsMapSelector,
+  commentsSelector,
   (commentsMap) => commentsMap.valueSeq().toArray()
 )
-export const idSelector = (_, props) => props.id
+
+export const pagesStateSelector = (state) =>
+  state.comments.pagination.pagesState
+
+export const pageStateSelector = createSelector(
+  pagesStateSelector,
+  commentsCurPageSelector,
+  (pageStates, curPage) => pageStates.get(curPage)
+)
+
+export const commentsByPageSelector = createSelector(
+  pageStateSelector,
+  (pageState) => pageState && pageState.get('commentIds')
+)
+
+export const loadingByPageSelector = createSelector(
+  pageStateSelector,
+  (pageState) => pageState && pageState.get('loading')
+)
+
+export const loadedByPageSelector = createSelector(
+  pageStateSelector,
+  (pageState) => pageState && pageState.get('loaded')
+)
 
 export const filtratedArticlesSelector = createSelector(
   selectionSelector,
   dateRangeSelector,
   articleListSelector,
   (selected, dateRange, articles) => {
-    console.log('---', 'article list selector')
     const { from, to } = dateRange
 
     return articles.filter((article) => {
@@ -41,11 +65,13 @@ export const filtratedArticlesSelector = createSelector(
 
 export const createCommentSelector = () =>
   createSelector(commentsSelector, idSelector, (comments, id) => {
-    return comments.getIn(['entities', id])
+    return comments.get(id)
   })
 
 export const articleSelector = createSelector(
   articlesMapSelector,
   idSelector,
-  (articles, id) => articles.get(id)
+  (articles, id) => {
+    return articles.get(id)
+  }
 )

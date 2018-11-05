@@ -7,16 +7,32 @@ import {
   LOAD_ALL_ARTICLES,
   LOAD_ARTICLE,
   LOAD_ARTICLE_COMMENTS,
+  LOAD_PAGE_COMMENTS,
+  CHANGE_CURRENT_PAGE,
+  INCREMENT_PAGE,
+  DECREMENT_PAGE,
   SUCCESS,
   FAIL,
-  START,
-  LOAD_ALL_COMMENTS,
-  LOAD_PAGE_COMMENTS
+  START
 } from '../constants'
 
 export function increment() {
   return {
     type: INCREMENT
+  }
+}
+
+export function incrementPage(curPage) {
+  return {
+    type: INCREMENT_PAGE,
+    payload: { curPage }
+  }
+}
+
+export function decrementPage(curPage) {
+  return {
+    type: DECREMENT_PAGE,
+    payload: { curPage }
   }
 }
 
@@ -56,23 +72,6 @@ export function loadAllArticles() {
   }
 }
 
-export function loadAllComments() {
-  debugger
-  return {
-    type: LOAD_ALL_COMMENTS,
-    callAPI: '/api/comment'
-  }
-}
-
-export function loadPageComments(limit, offset) {
-  debugger
-  return {
-    type: LOAD_PAGE_COMMENTS,
-    payload: { limit, offset },
-    callAPI: `/api/comment?limit=${limit}&offset=${offset}`
-  }
-}
-
 export function loadArticleById(id) {
   return (dispatch) => {
     dispatch({
@@ -104,5 +103,40 @@ export function loadArticleComments(articleId) {
     type: LOAD_ARTICLE_COMMENTS,
     payload: { articleId },
     callAPI: `/api/comment?article=${articleId}`
+  }
+}
+
+export function loadCommentsByPage(curPage = 1, step = 5, isLoaded) {
+  const offset = (curPage - 1) * step || 0
+
+  return (dispatch) => {
+    if (isLoaded) {
+      dispatch({
+        type: CHANGE_CURRENT_PAGE,
+        payload: { curPage }
+      })
+    } else {
+      dispatch({
+        type: LOAD_PAGE_COMMENTS + START,
+        payload: { curPage }
+      })
+
+      fetch(`/api/comment?limit=${step}&offset=${offset}`)
+        .then((res) => res.json())
+        .then((response) => {
+          dispatch({
+            type: LOAD_PAGE_COMMENTS + SUCCESS,
+            payload: { curPage },
+            response
+          })
+        })
+        .catch((error) =>
+          dispatch({
+            type: LOAD_PAGE_COMMENTS + FAIL,
+            payload: {},
+            error
+          })
+        )
+    }
   }
 }

@@ -1,52 +1,88 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import {
-  commentsLoadedSelector,
-  commentsLoadingSelector,
-  commentListSelector
-} from '../selectors'
-import { loadAllComments } from '../ac'
+import { commentsCurPageSelector, commentListSelector } from '../selectors'
+import { loadCommentsByPage, incrementPage, decrementPage } from '../ac'
 import Loader from './common/loader'
 import { NavLink } from 'react-router-dom'
+import './comment-pagination.css'
 
-export class CommentPagination extends Component {
+export class Pagination extends Component {
   static propTypes = {
     comments: PropTypes.array.isRequired,
+    page: PropTypes.number,
     fetchData: PropTypes.func
   }
 
+  changePage(page) {
+    const { fetchData } = this.props
+    fetchData(page)
+  }
+
   render() {
-    if (this.props.loading) return <Loader />
-    return <ul>{this.items}</ul>
+    const { curPage = 1, pagesCount } = this.props
+
+    const pagesArr = Array.from({ length: pagesCount }, (v, i) => i + 1)
+    return (
+      <nav aria-label="Page navigation example">
+        <h3>{this.props.page}</h3>
+        <ul className="hr">
+          <NavLink
+            to={`/comments/${+curPage - 1 < 1 ? 1 : +curPage - 1}`}
+            activeStyle={{ color: 'red' }}
+          >
+            Previous
+          </NavLink>
+          {pagesArr &&
+            pagesArr.map((item) => {
+              return (
+                <li
+                  key={item}
+                  style={{ color: item === curPage ? 'red' : 'blue' }}
+                  onClick={() => this.changePage(item)}
+                >
+                  <NavLink
+                    to={`/comments/${item}`}
+                    activeStyle={{ color: 'red' }}
+                  >
+                    {item}
+                  </NavLink>
+                </li>
+              )
+            })}
+          <NavLink
+            to={`/comments/${
+              +curPage + 1 > pagesCount ? curPage : +curPage + 1
+            }`}
+            activeStyle={{ color: 'red' }}
+          >
+            Next
+          </NavLink>
+        </ul>
+      </nav>
+    )
   }
 
-  get items() {
-    const { comments } = this.props
-    debugger
-    return comments.map((comment) => (
-      <li key={comment.id} className="test--comment-list__item">
-        <NavLink to={`/comments/${comment.id}`} activeStyle={{ color: 'red' }}>
-          {comment.text}
-        </NavLink>
-      </li>
-    ))
+  handlePrevClick = () => {
+    this.props.handleDecrementPage(this.props.page)
   }
 
-  componentDidMount() {
-    const { fetchData, loaded, loading } = this.props
-    debugger
-    fetchData && !loading && !loaded && fetchData()
+  handleNextClick = () => {
+    this.props.handleIncrementPage(this.props.page)
   }
 }
 
+const mapStateToProps = (state) => ({
+  comments: commentListSelector(state),
+  page: commentsCurPageSelector(state)
+})
+
+const mapDispatchToProps = {
+  handleIncrementPage: incrementPage,
+  handleDecrementPage: decrementPage
+}
+
 export default connect(
-  (state) => {
-    return {
-      comments: commentListSelector(state),
-      loading: commentsLoadingSelector(state),
-      loaded: commentsLoadedSelector(state)
-    }
-  },
-  { fetchData: loadAllComments }
-)(CommentPagination)
+  mapStateToProps,
+  mapDispatchToProps
+)(Pagination)
