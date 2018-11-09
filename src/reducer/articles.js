@@ -45,10 +45,15 @@ export default (state = new ReducerRecord(), action) => {
       return state.set('loading', true)
 
     case LOAD_ALL_ARTICLES + SUCCESS:
-      return state
-        .set('entities', arrToMap(response, ArticleRecord))
-        .set('loading', false)
-        .set('loaded', true)
+      return (
+        state
+          //        .set('entities', arrToMap(response, ArticleRecord))
+          .update('entities', (entities) => {
+            return arrToMap(response, ArticleRecord).merge(entities)
+          })
+          .set('loading', false)
+          .set('loaded', true)
+      )
 
     case LOAD_ARTICLE + START:
       return state.setIn(['entities', payload.id, 'loading'], true)
