@@ -8,6 +8,7 @@ import toggleOpen from '../../decorators/toggleOpen'
 import { loadArticleComments } from '../../ac'
 import './style.css'
 import Loader from '../common/loader'
+import { Consumer as UserConsumer } from '../../contexts/user'
 
 class CommentList extends Component {
   static propTypes = {
@@ -64,6 +65,9 @@ class CommentList extends Component {
 
     return (
       <div className="test__comment-list--body">
+        <UserConsumer>
+          {(username) => <h3>Username: {username}</h3>}
+        </UserConsumer>
         {comments.length ? (
           this.comments
         ) : (
