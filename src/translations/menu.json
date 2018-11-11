@@ -1,0 +1,16 @@
+﻿{
+  "en": {
+    "menu": "Main Menu",
+    "Articles": "Articles",
+    "Filters": "Filters",
+    "Counter": "Counter",
+    "Comments": "Comments"
+  },
+  "ru": {
+    "menu": "Основное Меню",
+    "Articles": "Статьи",
+    "Filters": "Фильтры",
+    "Counter": "Счетчик",
+    "Comments": "Комментарии"
+  }
+}

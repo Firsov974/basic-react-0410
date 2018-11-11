@@ -1,0 +1,10 @@
+﻿{
+  "en": {
+    "empty": "Please Select An Article",
+    "delete": "delete me"  
+  },
+  "ru": {
+    "empty": "Пожалуйста, выберите статью",
+    "delete": "удалить"  	  
+  }
+}

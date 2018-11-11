@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { increment } from '../ac'
+import { Consumer as LanguageConsumer } from '../contexts/language'
+const counterTranslations = require('../translations/counter.json')
 
 class Counter extends Component {
   static propTypes = {
@@ -13,7 +15,11 @@ class Counter extends Component {
     return (
       <div>
         <h2>{this.props.count}</h2>
-        <button onClick={this.handleClick}>increment</button>
+        <button onClick={this.handleClick}>
+          <LanguageConsumer>
+            {(lang) => counterTranslations[lang].increment}
+          </LanguageConsumer>
+        </button>
       </div>
     )
   }

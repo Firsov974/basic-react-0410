@@ -1,0 +1,16 @@
+﻿{
+  "en": {
+    "show comments": "show comments",
+    "hide comments": "hide comments",
+    "username": "Username",
+    "comment": "Comment",
+    "submit": "Submit"  
+  },
+  "ru": {
+    "show comments": "показать комментарии",
+    "hide comments": "спрятать комментарии",
+    "username": "Имя пользователя",
+    "comment": "Комментарий",
+    "submit": "Сохранить"  
+  }
+}
